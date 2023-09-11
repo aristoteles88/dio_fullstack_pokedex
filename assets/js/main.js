@@ -1,34 +1,39 @@
+function convertPokemonTypesToLi(pokemonTypes) {
+    const types = document.createElement('ol')
+    types.setAttribute('class', 'types')
+    pokemonTypes.map((typeName) => {
+        const type = document.createElement('li')
+        type.setAttribute('class', 'type')
+        type.appendChild(document.createTextNode(typeName))
+        types.appendChild(type)
+    })
+
+    return types
+}
+
 function convertPokemonToLi(pokemon) {
     const li = document.createElement('l1')
-    li.setAttribute('class', 'pokemon')
+    li.setAttribute('class', `pokemon ${pokemon.types[0]}`)
     
     const number = document.createElement('span')
     number.setAttribute('class', 'number')
-    number.appendChild(document.createTextNode('#001'))
+    let pokemonNumber = '000'.concat(pokemon.number)
+    pokemonNumber = pokemonNumber.substring(pokemonNumber.length - 4)
+    number.appendChild(document.createTextNode(`#${pokemonNumber}`))
 
     const name = document.createElement('span')
     name.setAttribute('class', 'name')
-    name.appendChild(document.createTextNode(pokemon.name))
+    let pokemonName = `${pokemon.name}`
+    pokemonName = pokemonName.charAt(0).toUpperCase() + pokemonName.substring(1)
+    name.appendChild(document.createTextNode(pokemonName))
 
     const detail = document.createElement('div')
     detail.setAttribute('class', 'detail')
-
-    const types = document.createElement('ol')
-    types.setAttribute('class', 'types')
-    
-    const type1 = document.createElement('li')
-    type1.setAttribute('class', 'type')
-    type1.appendChild(document.createTextNode('grass'))
-    
-    const type2 = document.createElement('li')
-    type2.setAttribute('class', 'type')
-    type2.appendChild(document.createTextNode('poison'))
-
-    types.appendChild(type1)
-    types.appendChild(type2)
+    console.log(pokemon.types)
+    types = convertPokemonTypesToLi(pokemon.types)
 
     const img = document.createElement('img')
-    img.setAttribute('src','https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/1.svg')
+    img.setAttribute('src',pokemon.photo)
     img.setAttribute('alt',pokemon.name)
 
     detail.appendChild(types)
@@ -43,13 +48,6 @@ function convertPokemonToLi(pokemon) {
     
 }
 const pokemonList = document.getElementById('pokemonList')
-fetch(url)
-.then((response) => response.json())
-.then((jsonBody) => jsonBody.results)
-.then((pokemons) => {
-    for (let i = 0; i < pokemons.length; i++){
-        const pokemon = pokemons[i]
-        pokemonList.appendChild(convertPokemonToLi(pokemon))
-    }
+pokeApi.getPokemons().then((pokemons = []) => {
+    pokemons.map((pokemon) => pokemonList.append(convertPokemonToLi(pokemon)))
 })
-.catch((error) => console.error(error))
